@@ -10,3 +10,4 @@ public class motorLoader {
     VictorSPX victorMotor;
 
 }
+/*unlimited power!!!!*/
