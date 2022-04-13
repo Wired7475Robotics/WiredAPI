@@ -19,14 +19,12 @@ public class motor {
         FileInputStream motorFiles = new FileInputStream(filename);
         motorProp.load(motorFiles);
         TalonSRX talonMotor = new TalonSRX(Integer.parseInt(motorProp.getProperty("motorID")));
-        motorProp.setProperty("loaded","true");
         return talonMotor;
     }
     private VictorSPX loadVictor(String filename) throws IOException{
         FileInputStream motorFiles = new FileInputStream(filename);
         motorProp.load(motorFiles);
         VictorSPX victorMotor = new VictorSPX(Integer.valueOf(motorProp.getProperty("MotorPort")));
-        motorProp.setProperty("loaded","true");
         return victorMotor;
     }
     public void driveMotor(String motorName, Double motorSpeed) throws IOException{
@@ -35,15 +33,11 @@ public class motor {
         motorProp.load(motorFiles);
         String motorType = motorProp.getProperty("motorType");
         if(motorType.equals("TalonSRX")){
-            if(motorProp.getProperty("loaded").equals("false")){
             talonMotor = loadTalon(motorFile);
-            }
             talonMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
         else if(motorType.equals("VictorSPX")){
-            if (motorProp.getProperty("loaded").equals("false")){
-                victorMotor = loadVictor(motorFile);
-            }    
+            victorMotor = loadVictor(motorFile);
             victorMotor.set(ControlMode.PercentOutput, motorSpeed);
         } else {
             System.out.println("Motor type not found");
@@ -71,8 +65,15 @@ public class motor {
         for(int i = 0; i <= MCFileNum; i++){
             FileInputStream motorFiles = new FileInputStream(MCfile[i]);
             motorProp.load(motorFiles);
-            motorProp.setProperty("loaded","false");
-            
+            type = motorProp.getProperty(motorType);    
+            if (type == TalonSRX){
+                talonMotor = loadTalon(motorFiles);
+                talonMotor.close()
+            }
+            if (type == VictorSPX){
+                victorMotor = loadTalon(motorFiles);
+                victorMotor.close()
+            }
         }
     }
 
