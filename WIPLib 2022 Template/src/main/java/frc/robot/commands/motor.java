@@ -59,22 +59,6 @@ public class motor {
         }
         return filename;
     }
-    public void exitMotors() throws IOException{
-        int MCFileNum = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles().length;
-        File[] MCfile = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles();
-        for(int i = 0; i <= MCFileNum; i++){
-            FileInputStream motorFiles = new FileInputStream(MCfile[i]);
-            motorProp.load(motorFiles);
-            type = motorProp.getProperty(motorType);    
-            if (type == TalonSRX){
-                talonMotor = loadTalon(motorFiles);
-                talonMotor.close()
-            }
-            if (type == VictorSPX){
-                victorMotor = loadTalon(motorFiles);
-                victorMotor.close()
-            }
-        }
-    }
+
 
 }
