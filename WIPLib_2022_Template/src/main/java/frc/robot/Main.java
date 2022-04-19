@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import java.lang.reflect.Method;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.commands.motor;
+
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all. Unless you know what
@@ -20,6 +23,6 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    RobotBase.startRobot(Robot::new);
+     new motor.driveMotor("exampleMotor", 0.2);
   }
 }

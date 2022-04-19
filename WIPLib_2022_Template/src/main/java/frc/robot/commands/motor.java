@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,7 +14,7 @@ public class motor {
     // Declare motor variables
     TalonSRX talonMotor;
     VictorSPX victorMotor;
-
+    TalonFX falconMotor;
     Properties motorProp = new Properties();
     int MCFileNum = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles().length;
     private TalonSRX loadTalon(String filename) throws IOException{
@@ -20,6 +22,13 @@ public class motor {
         motorProp.load(motorFiles);
         TalonSRX talonMotor = new TalonSRX(Integer.parseInt(motorProp.getProperty("motorID")));
         return talonMotor;
+    }
+    //
+    private TalonFX loadFalcon(String filename) throws IOException{
+        FileInputStream motorFiles = new FileInputStream(filename);
+        motorProp.load(motorFiles);
+        TalonFX falconMotor = new TalonFX(Integer.parseInt(motorProp.getProperty("motorID")));
+        return falconMotor;
     }
     private VictorSPX loadVictor(String filename) throws IOException{
         FileInputStream motorFiles = new FileInputStream(filename);
@@ -39,11 +48,18 @@ public class motor {
         else if(motorType.equals("VictorSPX")){
             victorMotor = loadVictor(motorFile);
             victorMotor.set(ControlMode.PercentOutput, motorSpeed);
-        } else {
+        } 
+        else if(motorType.equals("Falcon")){
+            falconMotor = loadFalcon(motorFile);
+            falconMotor.set(ControlMode.PercentOutput, motorSpeed);
+        } 
+        else if(motorType.equals("TalonFX")){
+            falconMotor = loadFalcon(motorFile);
+            falconMotor.set(ControlMode.PercentOutput, motorSpeed);
+        } 
+        else {
             System.out.println("Motor type not found");
         }
-        
-
     }
     private String getMotorFilename(String MotorName) throws IOException{
         int MCFileNum = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles().length;
