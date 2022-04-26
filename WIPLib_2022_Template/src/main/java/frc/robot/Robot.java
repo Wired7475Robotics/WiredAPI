@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.motor;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +20,10 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  String filePath = "WIPLib_2022_Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs";
+  motor leftDrive;
+  motor rightDrive;
+  motor armDrive;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -27,6 +32,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    leftDrive = new motor("leftDrive", filePath);
+    rightDrive = new motor("rightDrive", filePath);
+    armDrive = new motor("armDrive", filePath);
     m_robotContainer = new RobotContainer();
   }
 
@@ -81,7 +89,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    leftDrive.run(0.5);
+    leftDrive.runSame(0.5, rightDrive, armDrive);
+  }
 
   @Override
   public void testInit() {

@@ -12,62 +12,75 @@ import java.util.Properties;
 
 public class motor {
     // Declare motor variables
+    private String motorType;
     TalonSRX talonMotor;
     VictorSPX victorMotor;
     TalonFX falconMotor;
-    Properties motorProp = new Properties();
-    int MCFileNum = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles().length;
-    private TalonSRX loadTalon(String filename) throws IOException{
-        FileInputStream motorFiles = new FileInputStream(filename);
-        motorProp.load(motorFiles);
-        TalonSRX talonMotor = new TalonSRX(Integer.parseInt(motorProp.getProperty("motorID")));
-        return talonMotor;
+    
+
+  
+    public motor (String motorName, String filePath) {
+        loadMotor(motorName, filePath);
     }
-    //
-    private TalonFX loadFalcon(String filename) throws IOException{
-        FileInputStream motorFiles = new FileInputStream(filename);
-        motorProp.load(motorFiles);
-        TalonFX falconMotor = new TalonFX(Integer.parseInt(motorProp.getProperty("motorID")));
-        return falconMotor;
+    private TalonSRX loadTalon(Properties motorProp) {
+        return new TalonSRX(Integer.parseInt(motorProp.getProperty("MotorPort")));
     }
-    private VictorSPX loadVictor(String filename) throws IOException{
-        FileInputStream motorFiles = new FileInputStream(filename);
-        motorProp.load(motorFiles);
-        VictorSPX victorMotor = new VictorSPX(Integer.valueOf(motorProp.getProperty("MotorPort")));
-        return victorMotor;
+   /**
+    * Returns a Falcon FX motor object with the given properties
+    * @param motorProp The motor properties file to read
+    * @return Returns the new motor object
+    * @
+    */
+    private TalonFX loadFalcon(Properties motorProp) {
+        return new TalonFX(Integer.parseInt(motorProp.getProperty("MotorPort")));
     }
-    public void driveMotor(String motorName, Double motorSpeed) throws IOException{
-        String motorFile = getMotorFilename(motorName);
-        FileInputStream motorFiles = new FileInputStream(motorFile);
-        motorProp.load(motorFiles);
-        String motorType = motorProp.getProperty("motorType");
+    private VictorSPX loadVictor(Properties motorProp) {
+        return new VictorSPX(Integer.valueOf(motorProp.getProperty("MotorPort")));
+    }
+    public void loadMotor(String motorName, String filePath) {
+        Properties motorProp = new Properties();
+        String motorFile = getMotorFilename(motorName, filePath);
+        FileInputStream motorFiles;
+        try {
+            motorFiles = new FileInputStream(motorFile);
+            motorProp.load(motorFiles);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        motorType = motorProp.getProperty("motorType");
         if(motorType.equals("TalonSRX")){
-            talonMotor = loadTalon(motorFile);
-            talonMotor.set(ControlMode.PercentOutput, motorSpeed);
+            talonMotor = loadTalon(motorProp);
         }
         else if(motorType.equals("VictorSPX")){
-            victorMotor = loadVictor(motorFile);
-            victorMotor.set(ControlMode.PercentOutput, motorSpeed);
+            victorMotor = loadVictor(motorProp);
         } 
         else if(motorType.equals("Falcon")){
-            falconMotor = loadFalcon(motorFile);
-            falconMotor.set(ControlMode.PercentOutput, motorSpeed);
+            falconMotor = loadFalcon(motorProp);
         } 
         else if(motorType.equals("TalonFX")){
-            falconMotor = loadFalcon(motorFile);
-            falconMotor.set(ControlMode.PercentOutput, motorSpeed);
+            falconMotor = loadFalcon(motorProp);
         } 
         else {
             System.out.println("Motor type not found");
         }
     }
-    private String getMotorFilename(String MotorName) throws IOException{
-        int MCFileNum = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles().length;
-        File[] MCfile = new File("WIPLib 2022 Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs").listFiles();
+
+    private String getMotorFilename(String MotorName, String filePath){
+        Properties motorProp = new Properties();
+        int MCFileNum = new File(filePath).listFiles().length;
+        File[] MCfile = new File(filePath).listFiles();
         String filename = "";
+        
         for(int i = 0; i <= MCFileNum; i++){
-            FileInputStream motorFiles = new FileInputStream(MCfile[i]);
-            motorProp.load(motorFiles);
+            FileInputStream motorFiles;
+            try {
+                motorFiles = new FileInputStream(MCfile[i]);
+                motorProp.load(motorFiles);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             if(motorProp.getProperty("MotorName").equals(MotorName)){
                 filename = MCfile[i].getPath();
                 break;
@@ -76,5 +89,62 @@ public class motor {
         return filename;
     }
 
+    public void run(double speed){
+        switch(motorType){
+        case "TalonSRX":
+        {
+            talonMotor.set(ControlMode.PercentOutput, speed);
+            break;
+        }
+
+        case "VictorSPX":
+        {
+            victorMotor.set(ControlMode.PercentOutput, speed);
+            break;
+        }
+
+        case "Falcon": case "TalonFX":
+        {
+            falconMotor.set(ControlMode.PercentOutput, speed);
+            break;
+        }
+        }
+    }
+
+    public void runSame(double speed, motor ... motors)
+    {
+        this.run(speed);
+        int length = motors.length;
+        for(int i = 0; i < length; i++)
+        {
+            motors[i].run(speed);
+        }
+    }
+
+    public void runOpposite(double speed, motor ... motors)
+    {
+        this.run(speed);
+        int length = motors.length;
+        for(int i = 0; i < length; i++)
+        {
+            motors[i].run(-speed);
+        }
+    }
+
+    public static void runOpposite(double speed, motor matchMotors[], motor oppositeMotors[])
+    {
+        int length = matchMotors.length;
+        for(int i = 0; i < length; i++)
+        {
+            matchMotors[i].run(speed);
+        }
+    
+        length = matchMotors.length;
+        for(int i = 0; i < length; i++)
+        {
+            oppositeMotors[i].run(speed);
+        }
+    }
 
 }
+

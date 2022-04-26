@@ -23,6 +23,6 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-     new motor.driveMotor("exampleMotor", 0.2);
+     
   }
 }
