@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class motor {
     // Declare motor variables
@@ -145,6 +146,17 @@ public class motor {
             oppositeMotors[i].run(speed);
         }
     }
+/*
+    public void runForTime(double speed,int time){
+        run(speed);
+        try {
+            TimeUnit.SECONDS.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        run(0);
+    }
+*/
 
 }
 

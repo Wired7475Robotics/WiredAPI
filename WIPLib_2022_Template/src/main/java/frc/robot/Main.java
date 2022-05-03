@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import java.lang.reflect.Method;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.commands.motor;
 
 
 /**
@@ -23,6 +21,6 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-     
+    RobotBase.startRobot(Robot::new);
   }
 }

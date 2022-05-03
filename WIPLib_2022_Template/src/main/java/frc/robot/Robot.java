@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.motor;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -16,14 +17,15 @@ import frc.robot.commands.motor;
  * project.
  */
 public class Robot extends TimedRobot {
+  
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
   String filePath = "WIPLib_2022_Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs";
-  motor leftDrive;
-  motor rightDrive;
-  motor armDrive;
+  //motor basicTalonSRX = new motor("basicTalonSRX", filePath);
+  motor basicTalonFX = new motor("basicTalonFX", filePath);
+  //motor basicFalconSPX = new motor("basicFalconSPX", filePath);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -32,10 +34,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    leftDrive = new motor("leftDrive", filePath);
-    rightDrive = new motor("rightDrive", filePath);
-    armDrive = new motor("armDrive", filePath);
-    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -90,14 +88,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    leftDrive.run(0.5);
-    leftDrive.runSame(0.5, rightDrive, armDrive);
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    //basicFalconSPX.run(0.5);
+    basicTalonFX.run(0.5);
+    //basicTalonSRX.run(0.5);
+
   }
 
   /** This function is called periodically during test mode. */
