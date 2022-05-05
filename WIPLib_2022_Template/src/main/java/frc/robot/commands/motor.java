@@ -159,7 +159,12 @@ public class motor {
         }
         }
     }
-    
+    /**
+    *Runs all motors given at the same speed
+    *can be given an infinite number of motors
+    *Use like this:
+    *{@code motor1.runsame(0.5, motor2, motor3)}
+    */
     public void runSame(double speed, motor ... motors)
     {
         this.run(speed);
@@ -169,7 +174,12 @@ public class motor {
             motors[i].run(speed);
         }
     }
-
+    /**
+    *Runs motor(s) at oposite speed to an/group of other motor(s)
+    *Can be given either an infinte number of motors, or two lists of motors:
+    *{@code motor.runOpposite(0.5, motor1, motor2)}
+    *or {@code motorList1[].runOposite(0.5, motorList2[])}
+    */
     public void runOpposite(double speed, motor ... motors)
     {
         this.run(speed);
@@ -194,7 +204,7 @@ public class motor {
             oppositeMotors[i].run(speed);
         }
     }
-
+    
     public void runForTime(double speed,int time){
         run(speed);
         try {
