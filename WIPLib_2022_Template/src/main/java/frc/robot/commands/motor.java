@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  * {@code motor Motor = new motor(motorName, filePath);}
  * 
  * use {@code motor.run(speed) ;} to move motor
+ * use {@code motor.stop()} to stop motor
  * <h2>Notes</h2>
  * <ul>
  *  <li>The motor name is the name of the motor in the config file.</li>
@@ -39,7 +40,7 @@ public class motor {
      * <h1>The constructor for motor class.</h1>
      * 
      * @param motorName The name of the motor
-     * @param filePath The path to the file
+     * @param filePath The path to the config folder
      */
     public motor (String motorName, String filePath) {
         loadMotor(motorName, filePath);
@@ -131,12 +132,13 @@ public class motor {
         return filename;
     }
     /**
-     * Runs the motor at the given speed
+     * Runs motor at the given speed
      * @param speed The speed to run the motor at
      * <h2>NOTES:</h2>
      * <ul>
      * <li>The speed is a double value. ex.{@code motor.run(0.5);} will run the motor at %50 power.</li>
      * <li>!!DO NOT SET THE SPEED ABOVE 1.0 UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
+     </ul>
      */
     public void run(double speed){
         switch(motorType){
@@ -204,7 +206,11 @@ public class motor {
             oppositeMotors[i].run(speed);
         }
     }
-    
+    /**
+    * Runs motor for the given length of time at the set speed
+    *@param time the time (in seconds) that the motor will be run for
+    *@param speed The speed to run the motor at.
+    */
     public void runForTime(double speed,int time){
         run(speed);
         try {
@@ -215,10 +221,14 @@ public class motor {
         run(0);
     }
     /**
-     * Stops the motor
+     * Stops motor 
      */
-    public void stop(){
+    public void stopMotor(){
         run(0);
+    }
+    public void stopAllMOtors(){
+    for ();{
+    }
     }
 }
 
