@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  String filePath = "WIPLib_2022_Template\\src\\main\\java\\frc\\robot\\subsystems\\motorConfigs";
+  String filePath = "src\\main\\java\\frc\\robot\\subsystems\\motorConfigs";
   //motor basicTalonSRX = new motor("basicTalonSRX", filePath);
   motor basicTalonFX = new motor("basicTalonFX", filePath);
   //motor basicFalconSPX = new motor("basicFalconSPX", filePath);

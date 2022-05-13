@@ -24,7 +24,7 @@ public class motor {
         loadMotor(motorName, filePath);
     }
     private TalonSRX loadTalon(Properties motorProp) {
-        return new TalonSRX(Integer.parseInt(motorProp.getProperty("MotorPort")));
+        return new TalonSRX(Integer.parseInt(motorProp.getProperty("motorPort")));
     }
    /**
     * Returns a Falcon FX motor object with the given properties
@@ -33,10 +33,10 @@ public class motor {
     * @
     */
     private TalonFX loadFalcon(Properties motorProp) {
-        return new TalonFX(Integer.parseInt(motorProp.getProperty("MotorPort")));
+        return new TalonFX(Integer.parseInt(motorProp.getProperty("motorPort")));
     }
     private VictorSPX loadVictor(Properties motorProp) {
-        return new VictorSPX(Integer.valueOf(motorProp.getProperty("MotorPort")));
+        return new VictorSPX(Integer.valueOf(motorProp.getProperty("motorPort")));
     }
     public void loadMotor(String motorName, String filePath) {
         Properties motorProp = new Properties();
@@ -67,7 +67,7 @@ public class motor {
         }
     }
 
-    private String getMotorFilename(String MotorName, String filePath){
+    private String getMotorFilename(String MotorName, String filePath) throws NullPointerException{
         Properties motorProp = new Properties();
         int MCFileNum = new File(filePath).listFiles().length;
         File[] MCfile = new File(filePath).listFiles();
@@ -76,13 +76,13 @@ public class motor {
         for(int i = 0; i <= MCFileNum; i++){
             FileInputStream motorFiles;
             try {
-                motorFiles = new FileInputStream(MCfile[i]);
+                motorFiles = new FileInputStream(new File (MCfile[i].getPath()));
                 motorProp.load(motorFiles);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if(motorProp.getProperty("MotorName").equals(MotorName)){
+            if(motorProp.getProperty("motorName").equals(MotorName)){
                 filename = MCfile[i].getPath();
                 break;
             }
@@ -146,7 +146,7 @@ public class motor {
             oppositeMotors[i].run(speed);
         }
     }
-/*
+
     public void runForTime(double speed,int time){
         run(speed);
         try {
@@ -156,7 +156,7 @@ public class motor {
         }
         run(0);
     }
-*/
+
 
 }
 
