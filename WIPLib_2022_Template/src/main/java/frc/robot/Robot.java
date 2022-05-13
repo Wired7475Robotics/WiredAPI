@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
 
   String filePath = "src\\main\\java\\frc\\robot\\subsystems\\motorConfigs";
   //motor basicTalonSRX = new motor("basicTalonSRX", filePath);
-  motor basicTalonFX = new motor("basicTalonFX", filePath);
+  motor basicTalonFX = new motor("basicTalonFX");
   //motor basicFalconSPX = new motor("basicFalconSPX", filePath);
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    motor.setMotorConfigPath(filePath);
   }
 
   /**

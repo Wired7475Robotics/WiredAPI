@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;             
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -34,16 +35,25 @@ public class motor {
     TalonSRX talonMotor;
     VictorSPX victorMotor;
     TalonFX falconMotor;
-    
+    private static String filePath = "";
+
+
 
     /**
      * <h1>The constructor for motor class.</h1>
      * 
      * @param motorName The name of the motor
-     * @param filePath The path to the config folder
+     * The path to the config folder
      */
-    public motor (String motorName, String filePath) {
-        loadMotor(motorName, filePath);
+    public motor (String motorName) {
+        loadMotor(motorName);
+    }
+    /**
+     * <h1>Method to set the filePath variable used when loading motors</h1>
+     * @param path The relative path to the folder CONTAINING config file.
+     */
+    public static void setMotorConfigPath(String path) {
+        filePath = path;
     }
     /**
     * Returns a Talon SRX motor object with the given properties
@@ -73,11 +83,10 @@ public class motor {
     /**
      * Loads and sets the correct CAN controller type
      * @param motorName The name of the motor
-     * @param filePath The path to the file
      */
-    private void loadMotor(String motorName, String filePath) {
+    private void loadMotor(String motorName) {
         Properties motorProp = new Properties();
-        String motorFile = getMotorFilename(motorName, filePath);
+        String motorFile = getMotorFilename(motorName);
         FileReader motorFiles;
         try {
             motorFiles = new FileReader(motorFile);
@@ -104,14 +113,14 @@ public class motor {
         }
     }
 
-    private String getMotorFilename(String MotorName, String filePath) throws NullPointerException{
+    private String getMotorFilename(String MotorName) throws NullPointerException{
         Properties motorProp = new Properties();
         int MCFileNum = new File(filePath).listFiles().length;
         File[] MCfile = new File(filePath).listFiles();
         String filename = "";
         
         for(int i = 0; i <= MCFileNum; i++){
-            FileReader motorFiles;
+            FileInputStream motorFiles;
             try {
                 motorFiles = new FileInputStream(new File (MCfile[i].getPath()));
                 motorProp.load(motorFiles);
@@ -224,9 +233,35 @@ public class motor {
     public void stopMotor(){
         run(0);
     }
-    public void stopAllMOtors(){
-    for ();{
-    }
+    public void stopAllMotors(){
+    int MCFileNum = new File(filePath).listFiles().length;
+    File[] MCfile = new File(filePath).listFiles();
+    for (int i = 0; i <= MCFileNum; i++);{
+        FileInputStream motorFiles = new FileInputStream(new File(MCfile[i].getPath()));
+        Properties motorProp = new Properties();
+        motorProp.load(motorFiles);
+        String motorType = motorProp.getProperty("motorType");
+        String motorPort = motorProp.getProperty("motorPort");
+        if(motorType.equals("TalonSRX")){
+            TalonSRX motor = new TalonSRX(Integer.valueOf(motorPort));
+            motor.set(ControlMode.PercentOutput, 0);
+        }
+        else if(motorType.equals("VictorSPX")){
+            VictorSPX motor = new VictorSPX(Integer.valueOf(motorPort));
+            motor.set(ControlMode.PercentOutput, 0);
+        }
+        else if(motorType.equals("Falcon")){
+            TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
+            motor.set(ControlMode.PercentOutput, 0);
+        }
+        else if(motorType.equals("TalonFX")){
+            TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
+            motor.set(ControlMode.PercentOutput, 0);
+        }
+        else{
+            System.out.println("Motor type not found");
+        }
+        }
     }
 }
 
