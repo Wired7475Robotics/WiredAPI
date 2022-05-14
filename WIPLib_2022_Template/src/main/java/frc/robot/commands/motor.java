@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class motor {
     // Declare motor variables
     private String motorType;
+    private boolean loaded;
     TalonSRX talonMotor;
     VictorSPX victorMotor;
     TalonFX falconMotor;
@@ -46,7 +47,11 @@ public class motor {
      * The path to the config folder
      */
     public motor (String motorName) {
+        if (filePath.equals("")) {
+            System.out.println("Error: filePath not set");
+        }else{
         loadMotor(motorName);
+        }
     }
     /**
      * <h1>Method to set the filePath variable used when loading motors</h1>
@@ -62,7 +67,9 @@ public class motor {
     * @
     */
     private TalonSRX loadTalon(Properties motorProp) {
+        loaded = true;
         return new TalonSRX(Integer.parseInt(motorProp.getProperty("motorPort")));
+
     }
    /**
     * Returns a Falcon FX motor object with the given properties
@@ -70,6 +77,7 @@ public class motor {
     * @return Returns the new motor object
     */
     private TalonFX loadFalcon(Properties motorProp) {
+        loaded = true;
         return new TalonFX(Integer.parseInt(motorProp.getProperty("motorPort")));
     }
     /**
@@ -78,6 +86,7 @@ public class motor {
     * @return Returns the new motor object
     */
     private VictorSPX loadVictor(Properties motorProp) {
+        loaded = true;
         return new VictorSPX(Integer.valueOf(motorProp.getProperty("motorPort")));
     }
     /**
@@ -112,7 +121,9 @@ public class motor {
             System.out.println("Motor type not found");
         }
     }
-
+    /**
+     * Returns the filename of the motor properties file
+     */
     private String getMotorFilename(String MotorName) throws NullPointerException{
         Properties motorProp = new Properties();
         int MCFileNum = new File(filePath).listFiles().length;
@@ -145,24 +156,28 @@ public class motor {
      </ul>
      */
     public void run(double speed){
-        switch(motorType){
-        case "TalonSRX":
-        {
-            talonMotor.set(ControlMode.PercentOutput, speed);
-            break;
-        }
+        if (loaded == true){
+            switch(motorType){
+            case "TalonSRX":
+            {
+                talonMotor.set(ControlMode.PercentOutput, speed);
+                break;
+            }
 
-        case "VictorSPX":
-        {
-            victorMotor.set(ControlMode.PercentOutput, speed);
-            break;
-        }
+            case "VictorSPX":
+            {
+                victorMotor.set(ControlMode.PercentOutput, speed);
+                break;
+            }
 
-        case "Falcon": case "TalonFX":
-        {
-            falconMotor.set(ControlMode.PercentOutput, speed);
-            break;
-        }
+            case "Falcon": case "TalonFX":
+            {
+                falconMotor.set(ControlMode.PercentOutput, speed);
+                break;
+            }
+            }
+        } else{
+            System.out.println("Error: Motor not loaded");
         }
     }
     /**
@@ -233,35 +248,43 @@ public class motor {
     public void stopMotor(){
         run(0);
     }
+    /**
+     * Stops all motors
+     */
     public void stopAllMotors(){
-    int MCFileNum = new File(filePath).listFiles().length;
-    File[] MCfile = new File(filePath).listFiles();
-    for (int i = 0; i <= MCFileNum; i++);{
-        FileInputStream motorFiles = new FileInputStream(new File(MCfile[i].getPath()));
-        Properties motorProp = new Properties();
-        motorProp.load(motorFiles);
-        String motorType = motorProp.getProperty("motorType");
-        String motorPort = motorProp.getProperty("motorPort");
-        if(motorType.equals("TalonSRX")){
-            TalonSRX motor = new TalonSRX(Integer.valueOf(motorPort));
-            motor.set(ControlMode.PercentOutput, 0);
-        }
-        else if(motorType.equals("VictorSPX")){
-            VictorSPX motor = new VictorSPX(Integer.valueOf(motorPort));
-            motor.set(ControlMode.PercentOutput, 0);
-        }
-        else if(motorType.equals("Falcon")){
-            TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
-            motor.set(ControlMode.PercentOutput, 0);
-        }
-        else if(motorType.equals("TalonFX")){
-            TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
-            motor.set(ControlMode.PercentOutput, 0);
-        }
-        else{
-            System.out.println("Motor type not found");
-        }
-        }
+        try{
+            File[] MCfile = new File(filePath).listFiles();
+            int MCFileNum = MCfile.length;
+            int i = 0;
+            for (;i <= MCFileNum; i++);{
+                FileInputStream motorFiles = new FileInputStream(new File(MCfile[i].getPath()));
+                Properties motorProp = new Properties();
+                motorProp.load(motorFiles);
+                String motorType = motorProp.getProperty("motorType");
+                String motorPort = motorProp.getProperty("motorPort");
+                if(motorType.equals("TalonSRX")){
+                    TalonSRX motor = new TalonSRX(Integer.valueOf(motorPort));
+                    motor.set(ControlMode.PercentOutput, 0);
+                }
+                else if(motorType.equals("VictorSPX")){
+                    VictorSPX motor = new VictorSPX(Integer.valueOf(motorPort));
+                    motor.set(ControlMode.PercentOutput, 0);
+                }
+                else if(motorType.equals("Falcon")){
+                    TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
+                    motor.set(ControlMode.PercentOutput, 0);
+                }
+                else if(motorType.equals("TalonFX")){
+                    TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
+                    motor.set(ControlMode.PercentOutput, 0);
+                }
+                else{
+                    System.out.println("Motor type not found");
+                }
+                }
+            } catch(IOException e){
+            e.printStackTrace();
+    }
     }
 }
 
