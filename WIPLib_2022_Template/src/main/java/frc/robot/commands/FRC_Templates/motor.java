@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.FRC_Templates;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -37,8 +37,6 @@ public class motor {
     VictorSPX victorMotor;
     TalonFX falconMotor;
     private static String filePath = "";
-
-
 
     /**
      * <h1>The constructor for motor class.</h1>
