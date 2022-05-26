@@ -1,7 +1,7 @@
 package frc.robot.commands.FRC_Templates;
 
 import java.lang.reflect.Method;
-
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.I2C.Port;
 
@@ -36,13 +36,14 @@ public class controller {
             if (filePath.equals("")) {
                 System.out.println("Please set the controller mapping path first!");
             } else {
-                TimedRobot.addPeriodic(buttonLoop(motor, speed), 0.005);
+                buttonLoop(motor,speed);
             }
         }
         private void buttonLoop(motor motor, double speed){
             if (b == "x"){
                 if(controller.getXButton()){
-                    motor.run(speed);
+                    Periodic = controller = new ;
+                    controller.addPeriodic(()->{motor.run(speed);}, 0.01);
                 }
             }
         }
