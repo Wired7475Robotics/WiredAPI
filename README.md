@@ -1,2 +1,3 @@
-# FRC-Templates
-Templates for FRC robots
+# dev
+
+The location in which all updates/development happen
