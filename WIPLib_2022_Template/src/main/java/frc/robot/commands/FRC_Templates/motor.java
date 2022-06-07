@@ -1,6 +1,7 @@
 package frc.robot.commands.FRC_Templates;
 
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;             
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  *  <li>The motor name is the name of the motor in the config file.</li>
  *  <li>The file path is the relative path to the folder CONTAINING config file.</li>
  *  <li>The speed is a double value. ex.{@code motor.run(0.5);} will run the motor at %50 power.</li>
- *  <li>!!DO NOT SET THE SPEED ABOVE 1.0 UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
+ *  <li>!!DO NOT SET THE SPEED ABOVE 1.0 (or below - 1.0) UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
  * </ul>
  */
 public class motor {
@@ -36,6 +37,7 @@ public class motor {
     TalonSRX talonMotor;
     VictorSPX victorMotor;
     TalonFX falconMotor;
+    CANSparkMax sparkMaxMotor;
     private static String filePath = "";
 
     /**
@@ -87,6 +89,19 @@ public class motor {
         loaded = true;
         return new VictorSPX(Integer.valueOf(motorProp.getProperty("motorPort")));
     }
+
+    private CANSparkMax loadSparkMax(Properties motorProp) {
+        loaded = true;
+        CANSparkMax CPM;
+        if (Boolean.valueOf( motorProp.getProperty("brushed"))){
+            CPM = new CANSparkMax( Integer.valueOf(motorProp.getProperty("port")),MotorType.kBrushless);
+        } else {
+            CPM = new CANSparkMax( Integer.valueOf(motorProp.getProperty("port")),MotorType.kBrushed);
+        }
+        CPM.restoreFactoryDefaults();
+        return CPM;
+    }
+
     /**
      * Loads and sets the correct CAN controller type
      * @param motorName The name of the motor
@@ -105,17 +120,15 @@ public class motor {
         motorType = motorProp.getProperty("motorType");
         if(motorType.equals("TalonSRX")){
             talonMotor = loadTalon(motorProp);
-        }
-        else if(motorType.equals("VictorSPX")){
+        } else if(motorType.equals("VictorSPX")){
             victorMotor = loadVictor(motorProp);
-        } 
-        else if(motorType.equals("Falcon")){
+        } else if(motorType.equals("Falcon")){
             falconMotor = loadFalcon(motorProp);
-        } 
-        else if(motorType.equals("TalonFX")){
+        } else if(motorType.equals("TalonFX")){
             falconMotor = loadFalcon(motorProp);
-        } 
-        else {
+        } else if(motorType.equals("SparkMax")) {
+            sparkMaxMotor = loadSparkMax(motorProp);
+        } else {
             System.out.println("Motor type not found");
         }
     }
@@ -150,7 +163,7 @@ public class motor {
      * <h2>NOTES:</h2>
      * <ul>
      * <li>The speed is a double value. ex.{@code motor.run(0.5);} will run the motor at %50 power.</li>
-     * <li>!!DO NOT SET THE SPEED ABOVE 1.0 UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
+     * <li>!!DO NOT SET THE SPEED ABOVE 1.0 (or below - 1.0) UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
      </ul>
      */
     public void run(double speed){
@@ -172,6 +185,10 @@ public class motor {
             {
                 falconMotor.set(ControlMode.PercentOutput, speed);
                 break;
+            }
+            case "SparkMax" :
+            {
+                sparkMaxMotor.set(speed);
             }
             }
         } else{
@@ -263,16 +280,13 @@ public class motor {
                 if(motorType.equals("TalonSRX")){
                     TalonSRX motor = new TalonSRX(Integer.valueOf(motorPort));
                     motor.set(ControlMode.PercentOutput, 0);
-                }
-                else if(motorType.equals("VictorSPX")){
+                } else if(motorType.equals("VictorSPX")){
                     VictorSPX motor = new VictorSPX(Integer.valueOf(motorPort));
                     motor.set(ControlMode.PercentOutput, 0);
-                }
-                else if(motorType.equals("Falcon")){
+                } else if(motorType.equals("Falcon")){
                     TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
                     motor.set(ControlMode.PercentOutput, 0);
-                }
-                else if(motorType.equals("TalonFX")){
+                } else if(motorType.equals("TalonFX")){
                     TalonFX motor = new TalonFX(Integer.valueOf(motorPort));
                     motor.set(ControlMode.PercentOutput, 0);
                 }
