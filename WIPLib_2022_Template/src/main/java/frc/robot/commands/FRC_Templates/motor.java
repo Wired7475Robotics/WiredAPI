@@ -2,6 +2,8 @@ package frc.robot.commands.FRC_Templates;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;             
@@ -38,6 +40,8 @@ public class motor {
     VictorSPX victorMotor;
     TalonFX falconMotor;
     CANSparkMax sparkMaxMotor;
+    Spark sparkMotor;
+    VictorSP victorSPMotor;
     private static String filePath = "";
 
     /**
@@ -87,21 +91,28 @@ public class motor {
     */
     private VictorSPX loadVictor(Properties motorProp) {
         loaded = true;
-        return new VictorSPX(Integer.valueOf(motorProp.getProperty("motorPort")));
+        return new VictorSPX(Integer.parseInt(motorProp.getProperty("motorPort")));
     }
-
     private CANSparkMax loadSparkMax(Properties motorProp) {
         loaded = true;
         CANSparkMax CPM;
         if (Boolean.valueOf( motorProp.getProperty("brushed"))){
-            CPM = new CANSparkMax( Integer.valueOf(motorProp.getProperty("port")),MotorType.kBrushless);
+            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("port")),MotorType.kBrushless);
         } else {
-            CPM = new CANSparkMax( Integer.valueOf(motorProp.getProperty("port")),MotorType.kBrushed);
+            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("port")),MotorType.kBrushed);
         }
         CPM.restoreFactoryDefaults();
         return CPM;
     }
-
+    private Spark loadSpark(Properties motorProp){
+        loaded = true;
+        return new Spark(Integer.parseInt(motorProp.getProperty("")));
+    }
+    private VictorSP loadVictorSP(Properties motorProp){
+        loaded = true;
+        return new VictorSP(Integer.parseInt(motorProp.getProperty("")));
+    }
+    
     /**
      * Loads and sets the correct CAN controller type
      * @param motorName The name of the motor
@@ -128,7 +139,11 @@ public class motor {
             falconMotor = loadFalcon(motorProp);
         } else if(motorType.equals("SparkMax")) {
             sparkMaxMotor = loadSparkMax(motorProp);
-        } else {
+        } else if(motorType.equals("Spark")){
+            sparkMotor = loadSpark(motorProp);
+        } else if(motorType.equals("VictorSP")){ 
+            loadVictor(motorProp);
+        }else {
             System.out.println("Motor type not found");
         }
     }
@@ -189,6 +204,14 @@ public class motor {
             case "SparkMax" :
             {
                 sparkMaxMotor.set(speed);
+            }
+            case "Spark" :
+            {
+                sparkMotor.set(speed);
+            }
+            case "VictorSP" :
+            {
+                victorSPMotor.set(speed);
             }
             }
         } else{
