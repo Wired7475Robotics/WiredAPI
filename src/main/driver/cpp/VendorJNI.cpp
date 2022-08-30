@@ -1,5 +1,5 @@
 #include "jni.h"
-#include "com_vendor_jni_VendorJNI.h"
+#include "io_github_wired7475_VendorJNI.h"
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     // Check to ensure the JNI version is valid

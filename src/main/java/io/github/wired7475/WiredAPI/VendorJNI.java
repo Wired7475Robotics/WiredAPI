@@ -1,4 +1,4 @@
-package io.github.wired7475.jni;
+package io.github.wired7475.WiredAPI;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
