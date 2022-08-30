@@ -1,5 +1,14 @@
 package frc.robot.commands.wiredAPI;
-public class Encoder {
 
-    public Encoder(String s){}
+import frc.robot.commands.wiredAPI.EncoderLogic;
+
+
+public class Encoder {
+    public Encoder(){
+
+    }
+
+    String method1(String filepath){
+        return EncoderLogic.method2(filepath)
+    }
 }
