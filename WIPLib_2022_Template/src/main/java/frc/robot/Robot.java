@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.FRC_Templates.motor;
+import frc.robot.commands.wiredAPI.Motor;
 
 
 /**
@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
 
   String filePath = "src\\main\\java\\frc\\robot\\subsystems\\motors";
   //motor basicTalonSRX = new motor("basicTalonSRX", filePath);
-  motor basicTalonFX = new motor("basicTalonFX");
+  Motor basicTalonFX = new Motor("basicTalonFX");
   //motor basicFalconSPX = new motor("basicFalconSPX", filePath);
   /**
    * This function is run when the robot is first started up and should be used for any

@@ -1,4 +1,4 @@
-package frc.robot.commands.FRC_Templates;
+package frc.robot.commands.wiredAPI;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  *  <li>!!DO NOT SET THE SPEED ABOVE 1.0 (or below - 1.0) UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
  * </ul>
  */
-public class motor {
+public class Motor {
     // Declare motor variables
     private String motorType;
     private boolean loaded;
@@ -50,7 +50,7 @@ public class motor {
      * @param motorName The name of the motor
      * The path to the config folder
      */
-    public motor (String motorName) {
+    public Motor (String motorName) {
         if (filePath.equals("")) {
             System.out.println("Error: filePath not set");
         }else{
