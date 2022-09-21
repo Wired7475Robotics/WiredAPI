@@ -9,6 +9,6 @@ public class Encoder {
     }
 
     String method1(String filepath){
-        return EncoderLogic.method2(filepath)
+        return EncoderLogic.method2(filepath);
     }
 }

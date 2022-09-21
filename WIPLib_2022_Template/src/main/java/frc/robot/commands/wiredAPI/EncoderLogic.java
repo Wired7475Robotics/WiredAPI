@@ -7,6 +7,7 @@ public class EncoderLogic {
 
     }
     public String method2(String filepath){
+        filepath = filepath;
         return filepath;
     }
 

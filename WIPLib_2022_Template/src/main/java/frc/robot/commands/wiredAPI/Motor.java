@@ -142,7 +142,7 @@ public class Motor {
         } else if(motorType.equals("Spark")){
             sparkMotor = loadSpark(motorProp);
         } else if(motorType.equals("VictorSP")){ 
-            loadVictor(motorProp);
+            victorSPMotor = loadVictorSP(motorProp);
         }else {
             System.out.println("Motor type not found");
         }
@@ -150,7 +150,7 @@ public class Motor {
     /**
      * Returns the filename of the motor properties file
      */
-    private String getMotorFilename(String MotorName) throws NullPointerException{
+    private String getMotorFilename(String MotorName){
         Properties motorProp = new Properties();
         int MCFileNum = new File(filePath).listFiles().length;
         File[] MCfile = new File(filePath).listFiles();
@@ -224,7 +224,7 @@ public class Motor {
     *Use like this:
     *{@code motor1.runsame(0.5, motor2, motor3)}
     */
-    public void runSame(double speed, motor ... motors)
+    public void runSame(double speed, Motor ... motors)
     {
         this.run(speed);
         int length = motors.length;
@@ -239,7 +239,7 @@ public class Motor {
     *{@code motor.runOpposite(0.5, motor1, motor2)}
     *or {@code motorList1[].runOposite(0.5, motorList2[])}
     */
-    public void runOpposite(double speed, motor ... motors)
+    public void runOpposite(double speed, Motor ... motors)
     {
         this.run(speed);
         int length = motors.length;
@@ -249,7 +249,7 @@ public class Motor {
         }
     }
 
-    public static void runOpposite(double speed, motor matchMotors[], motor oppositeMotors[])
+    public static void runOpposite(double speed, Motor matchMotors[], Motor oppositeMotors[])
     {
         int length = matchMotors.length;
         for(int i = 0; i < length; i++)
