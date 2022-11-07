@@ -54,7 +54,7 @@ public class Motor {
         if (filePath.equals("")) {
             System.out.println("Error: filePath not set");
         }else{
-            loadMotor(motorName);
+        loadMotor(motorName);
         }
     }
     /**
@@ -97,20 +97,20 @@ public class Motor {
         loaded = true;
         CANSparkMax CPM;
         if (Boolean.valueOf( motorProp.getProperty("brushed"))){
-            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("motorPort")),MotorType.kBrushed);
+            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("port")),MotorType.kBrushless);
         } else {
-            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("motorPort")),MotorType.kBrushless);
+            CPM = new CANSparkMax( Integer.parseInt(motorProp.getProperty("port")),MotorType.kBrushed);
         }
         CPM.restoreFactoryDefaults();
         return CPM;
     }
     private Spark loadSpark(Properties motorProp){
         loaded = true;
-        return new Spark(Integer.parseInt(motorProp.getProperty("motorPort")));
+        return new Spark(Integer.parseInt(motorProp.getProperty("")));
     }
     private VictorSP loadVictorSP(Properties motorProp){
         loaded = true;
-        return new VictorSP(Integer.parseInt(motorProp.getProperty("motorPort")));
+        return new VictorSP(Integer.parseInt(motorProp.getProperty("")));
     }
     
     /**
@@ -137,12 +137,12 @@ public class Motor {
             falconMotor = loadFalcon(motorProp);
         } else if(motorType.equals("TalonFX")){
             falconMotor = loadFalcon(motorProp);
-        } else if(motorType.equals("CANSparkMax")) {
+        } else if(motorType.equals("SparkMax")) {
             sparkMaxMotor = loadSparkMax(motorProp);
         } else if(motorType.equals("Spark")){
             sparkMotor = loadSpark(motorProp);
         } else if(motorType.equals("VictorSP")){ 
-            loadVictorSP(motorProp);
+            victorSPMotor = loadVictorSP(motorProp);
         }else {
             System.out.println("Motor type not found");
         }
@@ -150,13 +150,13 @@ public class Motor {
     /**
      * Returns the filename of the motor properties file
      */
-    private String getMotorFilename(String MotorName) throws NullPointerException{
+    private String getMotorFilename(String MotorName){
         Properties motorProp = new Properties();
         int MCFileNum = new File(filePath).listFiles().length;
         File[] MCfile = new File(filePath).listFiles();
         String filename = "";
         
-        for(int i = 0; i < MCFileNum; i++){
+        for(int i = 0; i <= MCFileNum; i++){
             FileInputStream motorFiles;
             try {
                 motorFiles = new FileInputStream(new File (MCfile[i].getPath()));
@@ -183,23 +183,38 @@ public class Motor {
      */
     public void run(double speed){
         if (loaded == true){
-            if(motorType.equals("TalonSRX")){
+            switch(motorType){
+            case "TalonSRX":
+            {
                 talonMotor.set(ControlMode.PercentOutput, speed);
-            } else if(motorType.equals("VictorSPX")){
-                victorMotor.set(ControlMode.PercentOutput, speed);
-            } else if(motorType.equals("Falcon")){
-                falconMotor.set(ControlMode.PercentOutput, speed);
-            } else if(motorType.equals("CANSparkMax")){
-                sparkMaxMotor.set(speed);
-            } else if(motorType.equals("Spark")){
-                sparkMotor.set(speed);
-            } else if(motorType.equals("VictorSP")){
-                victorSPMotor.set(speed);
-            } else if (motorType.equals("TalonFX")){
-                falconMotor.set(ControlMode.PercentOutput, speed);
+                break;
             }
 
-        } else {
+            case "VictorSPX":
+            {
+                victorMotor.set(ControlMode.PercentOutput, speed);
+                break;
+            }
+
+            case "Falcon": case "TalonFX":
+            {
+                falconMotor.set(ControlMode.PercentOutput, speed);
+                break;
+            }
+            case "SparkMax" :
+            {
+                sparkMaxMotor.set(speed);
+            }
+            case "Spark" :
+            {
+                sparkMotor.set(speed);
+            }
+            case "VictorSP" :
+            {
+                victorSPMotor.set(speed);
+            }
+            }
+        } else{
             System.out.println("Error: Motor not loaded");
         }
     }
@@ -207,38 +222,17 @@ public class Motor {
     *Runs all motors given at the same speed
     *can be given an infinite number of motors
     *Use like this:
-    *{@code Motor.runsame(0.5, motor2, motor3)}
+    *{@code motor1.runsame(0.5, motor2, motor3)}
     */
-    public static void runSame(double speed, Motor ... motors)
+    public void runSame(double speed, Motor ... motors)
     {
+        this.run(speed);
         int length = motors.length;
         for(int i = 0; i < length; i++)
         {
             motors[i].run(speed);
         }
     }
-
-    public VictorSP getVictorSP(){
-            return victorSPMotor;
-    }
-
-    public Spark getSpark(){
-            return sparkMotor;
-    }
-
-    public CANSparkMax getSparkMax(){
-            return sparkMaxMotor;
-    }
-
-    public TalonSRX getTalon(){
-            return talonMotor;
-    }
-
-    public VictorSPX getVictor(){
-            return victorMotor;
-    }
-
-
     /**
     *Runs motor(s) at oposite speed to an/group of other motor(s)
     *Can be given either an infinte number of motors, or two lists of motors:
@@ -275,54 +269,16 @@ public class Motor {
     *@param time the time (in seconds) that the motor will be run for
     *@param speed The speed to run the motor at.
     */
-
     public void runForTime(double speed,int time){
-            run(speed);
-            try {
-                TimeUnit.SECONDS.sleep(time);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            run(0);
-    }
-
-    /**
-     * Runs motor at the given speed
-     * @param speed The speed to run the motor at
-     * <h2>NOTES:</h2>
-     * <ul>
-     * <li>The speed is a double value. ex.{@code motor.set(0.5);} will run the motor at %50 power.</li>
-     * <li>!!DO NOT SET THE SPEED ABOVE 1.0 (or below - 1.0) UNLESS YOU ARE ABSOLUTLY SURE OF WHAT YOU ARE DOING!!</li>
-     * </ul>
-     */
-    public void set(double speed){
-        this.run(speed);
-    }
-
-    /**
-     *
-     * Accelerates to target by speed every interval ms.
-     *
-     * Must be called in a loop
-     */
-    public void accelerateTo(double target, double speed, int interval) {
-        double current = 0;
-        if (target == 0) {
-            current = 0;
-        } else if (target > 0 && current + speed < target) {
-            current += speed;
-        } else if (target < 0 && current - speed > target) {
-            current -= speed;
-        } else{
-            current = target;
-        }
+        run(speed);
         try {
-            TimeUnit.MILLISECONDS.sleep(interval);
+            TimeUnit.SECONDS.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.run(current);
+        run(0);
     }
+
 
     /**
      * Stops motor 
